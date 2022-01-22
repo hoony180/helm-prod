@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nodejs-sfs
+spec:
+  selector:
+    matchLabels:
+      app: nodejs-sfs
+  serviceName: nodejs-sfs
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nodejs-sfs
+    spec:
+      containers:
+      - name: nodejs
+        image: hoony180/nodejs
+        ports:
+        - name: http
+          containerPort: 8080
+        volumeMounts:
+        - name: data
+          mountPath: /var/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      resources:
+        requests:
+          storage: 1Mi
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: sc-standard-retain
